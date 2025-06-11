@@ -1,26 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const LogSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  sourceModel: {
-    type: String,
-    required: true,
-    enum: ['Movie', 'Series']
-  },
-  logSourceId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    refPath: 'sourceModel'
-  },
-  logTitle: String,
-  liked:    Boolean,
-  rating:   {type:Number, default:0},
-  review:   String,
-  tags:     [String]
-}, { timestamps: true });
+const CommentSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  comment: { type: String },
+  createdAt: { type: Date, default: Date.now }
+});
 
-export default mongoose.model('Log', LogSchema);
+const ReviewSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  movie: { type: mongoose.Schema.Types.ObjectId, ref: "Movie" },
+  rating: { type: Number, min: 0, max: 5 },
+  reviewText: { type: String },
+  likes: { type: Number, default: 0 },
+  comments: [CommentSchema],
+  createdAt: { type: Date, default: Date.now }
+});
+
+export default mongoose.model("Review", ReviewSchema);

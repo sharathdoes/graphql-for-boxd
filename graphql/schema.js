@@ -1,8 +1,7 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
-# (PASTE THE ABOVE SCHEMA WE JUST BUILT HERE)
-# --- Core Types ---
+
 
 type User {
   id: ID!

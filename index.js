@@ -3,29 +3,15 @@ import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
 import typeDefs from './graphql/schema.js';
 import resolvers from './graphql/resolvers.js';
-import dotenv from 'dotenv';
+import { startStandaloneServer } from '@apollo/server/standalone';
 
-dotenv.config();
 
-const app = express();
+const server = new ApolloServer({ typeDefs, resolvers });
 
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Mongo connected"))
-  .catch(err => console.log(err));
+mongoose.connect('mongodb://localhost:27017/nodejstest');
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => {
-    // Simulating middleware auth:
-    // normally you'd verify token and attach user ID
-    return { userId: req.headers.userid || null }
-  }
+const { url } = await startStandaloneServer(server, {
+    listen: { port: 4000 },
 });
-
-await server.start();
-server.applyMiddleware({ app });
-
-app.listen(4000, () => {
-  console.log("🚀 Server ready at http://localhost:4000/graphql");
-});
+  
+console.log(`🚀  Server ready at: ${url}`);

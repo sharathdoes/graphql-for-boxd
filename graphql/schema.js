@@ -1,97 +1,94 @@
-import { gql } from 'apollo-server-express';
 
-const typeDefs = gql`
+const typeDefs = `
 
+  # User
+  type User {
+    id: ID!
+    username: String!
+    email: String!
+    bio: String
+    avatar: String
+    favoriteMovies: [Movie]
+    favoriteGenres: [String]
+    favoriteActors: [String]
+    createdAt: String
+  }
 
-type User {
-  id: ID!
-  username: String!
-  email: String!
-}
+  # Movie
+  type Movie {
+    id: ID!
+    title: String!
+    description: String
+    releaseDate: String
+    runtime: Int
+    genres: [String]
+    director: String
+    cast: [String]
+    AvgRating: Float
+    likesCount: Int
+    reviews: [Review]
+    createdAt: String
+  }
 
-type Log {
-  id: ID!
-  userId: ID!
-  sourceModel: String!
-  logSourceId: ID!
-  logTitle: String
-  liked: Boolean
-  rating: Int
-  review: String
-  tags: [String]
-  createdAt: String
-}
+  # Review
+  type Review {
+    id: ID!
+    user: User!
+    movie: Movie!
+    rating: Float
+    reviewText: String
+    likes: Int
+    comments: [Comment]
+    createdAt: String
+  }
 
-type Movie {
-  id: ID!
-  title: String!
-  description: String
-  runtime: Int
-  year: String
-  AvgRating: Float
-  likesCount: Int
-  genre: [String]
-  DirectedBy: String
-  cast: [String]
-  logs: [Log]
-}
+  # Comment
+  type Comment {
+    id: ID!
+    user: User!
+    comment: String
+    createdAt: String
+  }
 
-type Series {
-  id: ID!
-  title: String!
-  description: String
-  runtime: Int
-  year: String
-  AvgRating: Float
-  likesCount: Int
-  genre: [String]
-  DirectedBy: String
-  cast: [String]
-  logs: [Log]
-}
+  # Article
+  type Article {
+    id: ID!
+    author: User!
+    title: String!
+    content: String
+    tags: [String]
+    likes: Int
+    createdAt: String
+  }
 
-# --- Aggregated Types ---
+  type Query {
+    getUser(id: ID!): User
+    getMovie(id: ID!): Movie
+    getAllMovies: [Movie]
+    getReview(id: ID!): Review
+    getAllArticles: [Article]
+  }
 
-type MyActivity {
-  recentLogs: [Log]
-  popularReviews: [Log]
-  totalMovies: Int
-  totalSeries: Int
-  moviesThisYear: Int
-  ratingsGraph: [Int]
-  tagsUsed: [String]
-}
+  type Mutation {
+    register(username: String!, email: String!, password: String!): User
+    login(username: String!, password: String!): String
 
-type Recommendation {
-  reccMovies: [Movie]
-  reccSeries: [Series]
-}
+    addMovie(
+      title: String!
+      description: String
+      releaseDate: String
+      runtime: Int
+      genres: [String]
+      director: String
+      cast: [String]
+    ): Movie
 
-# --- Input Types ---
+    addReview(movieId: ID!, userId: ID!, rating: Float!, reviewText: String): Review
 
-input AddLogInput {
-  userId: ID!
-  sourceModel: String!
-  logSourceId: ID!
-  logTitle: String
-  liked: Boolean
-  rating: Int
-  review: String
-  tags: [String]
-}
+    addComment(reviewId: ID!, userId: ID!, comment: String!): Comment
 
-# --- Root Query & Mutation ---
-
-type Query {
-  myActivity(userId: ID!): MyActivity
-  recommendations(userId: ID!): Recommendation
-  myLogs(userId: ID!): [Log]
-}
-
-type Mutation {
-  addLog(input: AddLogInput!): Log
-  deleteLog(userId: ID!, logId: ID!): String
-}
+    addArticle(title: String!, content: String, tags: [String], authorId: ID!): Article
+  }
 `;
 
 export default typeDefs;

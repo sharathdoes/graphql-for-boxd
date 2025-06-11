@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
 import typeDefs from './graphql/schema.js';
 import resolvers from './graphql/resolvers.js';
 import dotenv from 'dotenv';

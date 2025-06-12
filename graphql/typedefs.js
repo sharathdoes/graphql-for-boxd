@@ -1,4 +1,3 @@
-
 const typeDefs = `
 
   # User
@@ -7,11 +6,12 @@ const typeDefs = `
     username: String!
     email: String!
     bio: String
-    avatar: String
     favoriteMovies: [Movie]
     favoriteGenres: [String]
     favoriteActors: [String]
     createdAt: String
+    reviews:[Review]
+    articles:[Article]
   }
 
   # Movie
@@ -19,7 +19,7 @@ const typeDefs = `
     id: ID!
     title: String!
     description: String
-    releaseDate: String
+    releaseYear: Int
     runtime: Int
     genres: [String]
     director: String
@@ -61,33 +61,69 @@ const typeDefs = `
     createdAt: String
   }
 
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
+  input Register {
+    email :String!
+    password:String!
+    username:String!
+  }
+
+  input Login {
+    email :String!
+    password:String!
+  }
+
+  input CreateMovie {
+    title:String!
+    description:String!
+    releaseYear:Int
+    runtime:Int
+    genre:[String]
+    director:String!
+  }
+
+  input CreateReview {
+    movie:ID!
+    user:ID!
+    comment:String
+  }
+
+    input CreateArticleInput {
+    title: String!
+    content: String!
+  }
+
+  
+
   type Query {
-    getUser(id: ID!): User
-    getMovie(id: ID!): Movie
-    getAllMovies: [Movie]
-    getReview(id: ID!): Review
-    getAllArticles: [Article]
+    users:[User!]!
+    user(id:ID!)
+
+    movies: [Movie!]!
+    movie(id: ID!): Movie 
+    
+    reviews: [Review!]! 
+    review(id: ID!): 
+    reviewsByMovie(movieId: ID!): [Review!]!
+
+    articles: [Article!]! 
+    article(id: ID!): Article 
+    articlesByUser(userId: ID!): [Article!]!
+
+    # Current authenticated user (requires token)
+    me: User # Returns the currently authenticated user
   }
 
   type Mutation {
-    register(username: String!, email: String!, password: String!): User
-    login(username: String!, password: String!): String
-
-    addMovie(
-      title: String!
-      description: String
-      releaseDate: String
-      runtime: Int
-      genres: [String]
-      director: String
-      cast: [String]
-    ): Movie
-
-    addReview(movieId: ID!, userId: ID!, rating: Float!, reviewText: String): Review
-
-    addComment(reviewId: ID!, userId: ID!, comment: String!): Comment
-
-    addArticle(title: String!, content: String, tags: [String], authorId: ID!): Article
+    RegisterUser(input: Register!): AuthPayload!
+    Login(input :Login!): AuthPayload!
+    createMovie(input: CreateMovie ): Movie!
+    createArticle(input :  CreateArticleInput):Article!
+    createReview(input :CreateReview) : Review!
   }
 `;
 

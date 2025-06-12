@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
-import typeDefs from './graphql/schema.js';
+import typeDefs from './graphql/typedefs.js';
 import resolvers from './graphql/resolvers.js';
 import { startStandaloneServer } from '@apollo/server/standalone';
 

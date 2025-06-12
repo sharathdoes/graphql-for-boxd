@@ -8,7 +8,10 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-mongoose.connect('mongodb://localhost:27017/nodejstest');
+mongoose.connect('mongodb://localhost:27017/nodejstest', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
 const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
